@@ -51,7 +51,7 @@ class Patrol extends Model
         return $this->hasMany(PatrolComment::class, 'patrol_id');
     }
 
-    public function media()
+    public function mediaItems()
     {
         return $this->hasMany(PatrolMedia::class, 'patrol_id');
     }

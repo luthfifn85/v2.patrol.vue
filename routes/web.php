@@ -45,9 +45,10 @@ Route::middleware('auth')->group(function () {
 
     // patrol
     Route::controller(PatrolController::class)->group(function () {
-        Route::prefix('patrol')->group(function () {
-            Route::name('patrol')->group(function () {
-                Route::get('/', 'index');
+        Route::prefix('patrols')->group(function () {
+            Route::name('patrols.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{patrolBind}', 'show')->name('show');
             });
         });
     });
