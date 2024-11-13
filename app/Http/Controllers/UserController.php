@@ -2,57 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
+use App\Models\Role;
 use App\Models\User;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Throwable;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $title = 'User';
-
-        $get = User::with('role:id,name')
+        $users = User::whereNot('id', Auth::user()->id)
+            ->with('role:id,name')
             ->get();
 
-        return view('guard.index', [
-            'title' => $title,
-            'get' => $get
+        $roles = Role::where('is_active', 1)
+            ->get();
+
+        return Inertia::render('User/Index', [
+            'title' => 'Users',
+            'users' => $users->toArray(),
+            'userCount' => $users->count(),
+            'roles' => $roles->toArray()
         ]);
     }
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
-
-        try
-        {
-            $request->validate([
-                'role_id' => ['required'],
-                'name' => ['required'],
-                'email' => ['required', 'unique:users,email'],
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'role_id' => ['required', 'exists:roles,id,is_active,1'],
+                'email' => ['required', 'unique:users,email', 'email', 'max:255', 'string'],
                 'password' => ['required', 'min:8']
             ]);
 
             User::create([
-                'role_id' => $request->role_id,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
+                ...$validated,
+                'password' => Hash::make($validated['password'])
             ]);
 
-            DB::commit();
-
-            return back()->with('successs', 'New user created');
-        }
-
-        catch (Throwable $e)
-        {
-            DB::rollBack();
-
-            throw $e;
+            return redirect()->back()->with('success', [
+                'message' => 'User successfully created',
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('error', [
+                'message' => 'Failed to create user. Something went wrong',
+                'id' => uniqid()
+            ]);
         }
     }
 
@@ -83,30 +86,27 @@ class UserController extends Controller
         }
     }
 
-    public function password(Request $request, User $get)
+    public function changePassword(Request $request, User $userBind)
     {
-        DB::beginTransaction();
-
-        try
-        {
-            $request->validate([
+        try {
+            $validated = $request->validate([
                 'password' => ['required', 'min:8']
             ]);
 
-            $get->update([
-                'password' => Hash::make($request->password)
+            $userBind->update([
+                'password' => Hash::make($validated['password'])
             ]);
 
-            DB::commit();
-
-            return back()->with('success', 'Password updated');
-        }
-
-        catch (Throwable $e)
-        {
-            DB::rollBack();
-
-            throw $e;
+            return redirect()->back()->with('success', [
+                'message' => 'Password successfully updated',
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('success', [
+                'message' => 'Failed to update password. Something went wrong',
+                'id' => uniqid()
+            ]);
         }
     }
 }

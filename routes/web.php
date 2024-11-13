@@ -110,12 +110,12 @@ Route::middleware('auth')->group(function () {
 
     // user
     Route::controller(UserController::class)->group(function () {
-        Route::prefix('user')->group(function () {
-            Route::name('user')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/store', 'store')->name('.store');
+        Route::prefix('users')->group(function () {
+            Route::name('users.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
                 Route::put('/{id}/update', 'update')->name('.update');
-                Route::put('/{id}/password', 'password')->name('.password');
+                Route::put('/{userBind}/change-password', 'changePassword')->name('change_password');
             });
         });
     });
