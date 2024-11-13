@@ -1,20 +1,19 @@
 <?php
 
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\DashboardController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\LogsController;
-use App\Http\Controllers\PatrolCheckpointController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PatrolController;
-use App\Http\Controllers\PatrolLocationController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatrolPlanController;
 use App\Http\Controllers\PatrolUserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\PatrolLocationController;
+use App\Http\Controllers\PatrolCheckpointController;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -133,9 +132,7 @@ Route::middleware('auth')->group(function () {
     // FAQs
     Route::controller(FaqsController::class)->group(function () {
         Route::prefix('faqs')->group(function () {
-            Route::name('faqs')->group(function () {
-                Route::get('/', 'index');
-            });
+            Route::get('/', 'index')->name('faqs.index');
         });
     });
 
@@ -149,4 +146,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
