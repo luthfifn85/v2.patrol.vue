@@ -76,11 +76,12 @@ Route::middleware('auth')->group(function () {
 
     // checkpoint
     Route::controller(PatrolCheckpointController::class)->group(function () {
-        Route::prefix('checkpoint')->group(function () {
-            Route::name('checkpoint')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/store', 'store')->name('.store');
-                Route::put('/{id}/update', 'update')->name('.update');
+        Route::prefix('checkpoints')->group(function () {
+            Route::name('checkpoints.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::put('/{checkpointBind}', 'update')->name('update');
+                Route::put('/{checkpointBind}/qr-code', 'generateQRCode')->name('generate_qr_code');
             });
         });
     });

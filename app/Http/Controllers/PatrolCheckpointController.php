@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PatrolCheckpoint;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-use Ramsey\Uuid\Uuid;
 use Throwable;
+use Inertia\Inertia;
+use Ramsey\Uuid\Uuid;
+use App\Models\Company;
+use Illuminate\Http\Request;
+use App\Models\PatrolLocation;
+use Illuminate\Validation\Rule;
+use App\Models\PatrolCheckpoint;
+use Illuminate\Support\Facades\Log;
 
 class PatrolCheckpointController extends Controller
 {
@@ -15,73 +18,108 @@ class PatrolCheckpointController extends Controller
     {
         $title = 'Checkpoint';
 
-        $get = PatrolCheckpoint::with('company:id,name', 'patrolLocation:id,name')
-            ->paginate(200);
+        $checkpoints = PatrolCheckpoint::whereHas('company', function ($query) {
+            $query->where('is_active', 1);
+        })
+            ->whereHas('patrolLocation', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->with('company:id,name', 'patrolLocation:id,name')
+            ->get();
 
-        return view('checkpoint.index', [
+        $locations = PatrolLocation::where('is_active', 1)
+            ->get();
+
+        $companies = Company::where('is_active', 1)
+            ->get();
+
+        return Inertia::render('Checkpoint/Index', [
             'title' => $title,
-            'get' => $get
+            'checkpoints' => $checkpoints->toArray(),
+            'checkpointCount' => $checkpoints->count(),
+            'locations' => $locations->toArray(),
+            'companies' => $companies->toArray()
         ]);
     }
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
-
-        try
-        {
-            $request->validate([
-                'company_id' => ['required'],
-                'patrol_location_id' => ['required'],
+        try {
+            $validated = $request->validate([
+                'company_id' => ['required', 'exists:companies,id,is_active,1'],
+                'patrol_location_id' => ['required', 'exists:patrol_locations,id,is_active,1'],
                 'name' => ['required', Rule::unique('patrol_checkpoints', 'name')->where('patrol_location_id', $request->patrol_location_id)],
-                'mode' => ['required']
+            ], [
+                'company_id.required' => 'The company field is required',
+                'company_id.exists' => 'The selected company is invalid',
+                'patrol_location_id.required' => 'The location field is required',
+                'patrol_location_id.exists' => 'The selected location is invalid',
+                'name.required' => 'The name field is required',
+                'name.unique' => 'The name has already been taken',
             ]);
 
             PatrolCheckpoint::create([
-                'company_id' => $request->company_id,
-                'patrol_location_id' => $request->patrol_location_id,
-                'uuid' => Uuid::uuid4(),
-                'name' => $request->name,
-                'mode' => $request->mode
+                ...$validated,
+                'uuid' => Uuid::uuid4()
             ]);
 
-            DB::commit();
-
-            return back()->with('success', 'New checkpoint created');
-        }
-
-        catch (Throwable $e)
-        {
-            DB::rollBack();
-
-            throw $e;
+            return redirect()->back()->with('success', [
+                'message' => "Checkpoint with name {$validated['name']} successfully created",
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('error', [
+                'message' => 'Something went wrong',
+                'id' => uniqid()
+            ]);
         }
     }
 
-    public function update(Request $request, PatrolCheckpoint $get)
+    public function update(Request $request, PatrolCheckpoint $checkpointBind)
     {
-        DB::beginTransaction();
-
-        try
-        {
-            $request->validate([
-                'mode' => ['required']
+        try {
+            $validated = $request->validate([
+                'mode' => ['nullable', 'in:0,1']
+            ], [
+                'mode.in' => 'The mode field is invalid'
             ]);
 
-            $get->update([
-                'mode' => $request->mode
+            $checkpointBind->update([
+                ...$validated,
+                'mode' => $validated['mode'] ? 1 : null
             ]);
 
-            DB::commit();
-
-            return back()->with('success', 'Checkpoint updated');
+            return redirect()->back()->with('success', [
+                'message' => 'Checkpoint successfully updated',
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('error', [
+                'message' => 'Something went wrong',
+                'id' => uniqid()
+            ]);
         }
+    }
 
-        catch (Throwable $e)
-        {
-            DB::rollBack();
+    public function generateQRCode(PatrolCheckpoint $checkpointBind)
+    {
+        try {
+            $checkpointBind->update([
+                'uuid' => Uuid::uuid4()
+            ]);
 
-            throw $e;
+            return redirect()->back()->with('success', [
+                'message' => 'New QR Code successfully generated',
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('error', [
+                'message' => 'Something went wrong',
+                'id' => uniqid()
+            ]);
         }
     }
 }
