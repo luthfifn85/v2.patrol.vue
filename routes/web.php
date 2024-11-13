@@ -64,11 +64,11 @@ Route::middleware('auth')->group(function () {
 
     // location
     Route::controller(PatrolLocationController::class)->group(function () {
-        Route::prefix('location')->group(function () {
-            Route::name('location')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/store', 'store')->name('.store');
-                Route::put('/{id}/update', 'update')->name('.update');
+        Route::prefix('locations')->group(function () {
+            Route::name('locations.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::put('/{locationBind}', 'update')->name('update');
             });
         });
     });
