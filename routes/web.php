@@ -88,13 +88,13 @@ Route::middleware('auth')->group(function () {
 
     // guard
     Route::controller(PatrolUserController::class)->group(function () {
-        Route::prefix('guard')->group(function () {
-            Route::name('guard')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/store', 'store')->name('.store');
-                Route::put('/{id}/update', 'update')->name('.update');
-                Route::put('/{id}/password', 'password')->name('.password');
-                Route::put('/{id}/reset', 'reset')->name('.reset');
+        Route::prefix('guards')->group(function () {
+            Route::name('guards.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::put('/{patrolUserBind}', 'update')->name('update');
+                Route::put('/{patrolUserBind}/change-password', 'changePassword')->name('change_password');
+                Route::put('/{patrolUserBind}/reset', 'resetSession')->name('reset_session');
             });
         });
     });

@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class PatrolUser extends Authenticatable
 {
@@ -33,7 +32,7 @@ class PatrolUser extends Authenticatable
 
     public function patrolLocation()
     {
-        return $this->belongsTo(PatrolLocation::class);
+        return $this->belongsTo(PatrolLocation::class, 'patrol_location_id', 'id');
     }
 
     public function patrolRole()
@@ -48,6 +47,6 @@ class PatrolUser extends Authenticatable
 
     public function location()
     {
-        return $this->hasMany(PatrolUserLocation::class);
+        return $this->belongsTo(PatrolLocation::class, 'patrol_location_id');
     }
 }
