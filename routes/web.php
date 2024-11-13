@@ -26,8 +26,8 @@ Route::middleware('auth')->group(function () {
     // dashboard
     Route::controller(DashboardController::class)->group(function () {
         Route::prefix('dashboard')->group(function () {
-            Route::name('dashboard')->group(function () {
-                Route::get('/', 'index');
+            Route::name('dashboard.')->group(function () {
+                Route::get('/', 'index')->name('index');
             });
         });
     });
