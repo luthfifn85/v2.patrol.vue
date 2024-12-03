@@ -21,6 +21,11 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/terms-policy', function () {
+    return Inertia::render('Terms/Index');
+})->name('terms_policy');
+
+
 Route::middleware('auth')->group(function () {
 
     // dashboard
