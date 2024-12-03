@@ -10,7 +10,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 
 <template>
     <AppLayout>
-        <div class="nk-block-head nk-block-head-lg wide-md">
+        <div class="nk-block-head nk-block-head-lg wide-md mt-4">
             <div class="nk-block-head-content">
                 <div class="nk-block-head-sub"><span>FAQs</span></div>
                 <h2 class="nk-block-title fw-normal">

@@ -1,6 +1,16 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+
+const props = defineProps({
+    toggleSideNav: Function,
+});
 </script>
+
+<style lang="css">
+.dropdown-menu-s1 {
+    border-top: 3px solid #c61f25;
+}
+</style>
 
 <template>
     <div class="nk-header-wrap">
@@ -39,15 +49,23 @@ import { Link } from "@inertiajs/vue3";
                 </li>
                 <li
                     class="nk-menu-item"
+                    :class="{
+                        active:
+                            route().current('reports.index') ||
+                            route().current('reports.history') ||
+                            route().current('reports.incident'),
+                    }"
+                >
+                    <Link :href="route('reports.index')" class="nk-menu-link">
+                        <span class="nk-menu-text">Report</span>
+                    </Link>
+                </li>
+                <li
+                    class="nk-menu-item"
                     :class="{ active: route().current('faqs.index') }"
                 >
                     <Link :href="route('faqs.index')" class="nk-menu-link">
                         <span class="nk-menu-text">FAQs</span>
-                    </Link>
-                </li>
-                <li class="nk-menu-item">
-                    <Link :href="route('report')" class="nk-menu-link">
-                        <span class="nk-menu-text">Report</span>
                     </Link>
                 </li>
             </ul>
@@ -97,23 +115,9 @@ import { Link } from "@inertiajs/vue3";
                         <div class="dropdown-inner">
                             <ul class="link-list">
                                 <li>
-                                    <Link :href="route('profile')"
+                                    <Link :href="route('profiles.edit')"
                                         ><em class="icon ni ni-user-alt"></em
                                         ><span>My Profile</span></Link
-                                    >
-                                </li>
-                                <li>
-                                    <Link :href="route('faqs.index')"
-                                        ><em
-                                            class="icon ni ni-activity-alt"
-                                        ></em
-                                        ><span>FAQs</span></Link
-                                    >
-                                </li>
-                                <li>
-                                    <a class="dark-switch" href="#"
-                                        ><em class="icon ni ni-moon"></em
-                                        ><span>Dark Mode</span></a
                                     >
                                 </li>
                             </ul>
@@ -122,12 +126,16 @@ import { Link } from "@inertiajs/vue3";
                             <ul class="link-list">
                                 <li>
                                     <Link
-                                        as="button"
+                                        as="a"
+                                        class="flex items-center"
                                         :href="route('logout')"
                                         method="post"
-                                        ><em class="icon ni ni-signout"></em
-                                        ><span>Logout</span></Link
                                     >
+                                        <em
+                                            class="icon ni ni-signout"
+                                        ></em>
+                                        <span> Logout </span>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -138,6 +146,7 @@ import { Link } from "@inertiajs/vue3";
                         href="#"
                         class="toggle nk-quick-nav-icon me-n1"
                         data-target="sideNav"
+                        @click="toggleSideNav"
                         ><em class="icon ni ni-menu"></em
                     ></a>
                 </li>

@@ -151,7 +151,7 @@ const patrolLocationDisplay = computed(() => {
                 <template v-if="!modalData?.isEdit">
                     <div class="col-12">
                         <div class="form-group mt-3">
-                            <label class="form-label" for="company_id"
+                            <label class="form-label" for="companyId"
                                 >Company<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
@@ -159,6 +159,7 @@ const patrolLocationDisplay = computed(() => {
                                     @change="handleCompanyChange"
                                     v-model="form.company_id"
                                     class="form-select"
+                                    id="companyId"
                                     required
                                 >
                                     <option value="" disabled>
@@ -178,13 +179,14 @@ const patrolLocationDisplay = computed(() => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="location_id"
+                            <label class="form-label" for="locationId"
                                 >Location<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
                                 <select
                                     v-model="form.patrol_location_id"
                                     class="form-select"
+                                    id="locationId"
                                     :required="locationRequired"
                                     :disabled="
                                         !form.company_id || !locationRequired
@@ -207,14 +209,14 @@ const patrolLocationDisplay = computed(() => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="name"
+                            <label class="form-label" for="guardName"
                                 >Name<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
                                 <input
                                     type="text"
                                     class="form-control"
-                                    v-bind="form"
+                                    id="guardName"
                                     v-model="form.name"
                                     name="name"
                                     placeholder="Enter guard name"
@@ -236,6 +238,7 @@ const patrolLocationDisplay = computed(() => {
                                 <input
                                     type="email"
                                     class="form-control"
+                                    id="email"
                                     v-model="form.email"
                                     name="email"
                                     placeholder="your-email@mail"
@@ -250,7 +253,7 @@ const patrolLocationDisplay = computed(() => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="mobile_no"
+                            <label class="form-label" for="mobileNo"
                                 >Mobile Phone<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
@@ -262,6 +265,7 @@ const patrolLocationDisplay = computed(() => {
                                     type="text"
                                     class="form-control"
                                     autocomplete="off"
+                                    id="mobileNo"
                                     name="mobile_no"
                                     placeholder="08123456789"
                                     @input="sanitizeInput"
@@ -278,12 +282,13 @@ const patrolLocationDisplay = computed(() => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="patrol_role_id"
+                            <label class="form-label" for="patrolRoleId"
                                 >Role<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
                                 <select
                                     v-model="form.patrol_role_id"
+                                    id="patrolRoleId"
                                     class="form-select"
                                     @change="handleRoleChange"
                                     required
@@ -333,6 +338,7 @@ const patrolLocationDisplay = computed(() => {
                                 :type="showPassword ? 'text' : 'password'"
                                 class="form-control"
                                 v-model="form.password"
+                                id="password"
                                 :minlength="8"
                                 name="password"
                                 placeholder="********"

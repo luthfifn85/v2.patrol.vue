@@ -6,9 +6,15 @@ import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
 import InputModal from "@/Pages/PatrolUser/InputModal.vue";
 import StatusModal from "@/Pages/PatrolUser/StatusModal.vue";
-import DtOptions from "@/datatables-config";
+import createDtOptions from "@/datatables-config";
+import jszip from "jszip";
+import pdfmake from "pdfmake";
 
 DataTable.use(DataTablesCore);
+DataTablesCore.Buttons.jszip(jszip);
+DataTablesCore.Buttons.pdfMake(pdfmake);
+
+const DtOptions = createDtOptions();
 
 const props = defineProps({
     title: {
@@ -75,12 +81,16 @@ const columns = [
     },
     {
         data: "is_active",
-        className: "align-content-center justify-items-start",
+        className: "align-content-center justify-items-start text-center",
         render: (data) => {
             return data
                 ? `<span class="badge rounded-pill bg-success">Active</span>`
                 : `<span class="badge rounded-pill bg-danger">Inactive</span>`;
         },
+    },
+    {
+        data: null,
+        className: "align-content-center justify-items-start !z-50",
     },
 ];
 
@@ -112,143 +122,134 @@ const openModal = (
 
 <template>
     <AppLayout>
-        <div class="nk-content-wrap">
-            <div class="nk-block-head nk-block-head-sm">
-                <div class="nk-block-between">
-                    <div class="nk-block-head-content">
-                        <h3 class="nk-block-title page-title mb-0">
-                            {{ title }}
-                        </h3>
-                        <div class="nk-block-des text-soft">
-                            <p>
-                                You have total
-                                <span class="text-base">{{ guardCount }}</span>
-                                data.
-                            </p>
-                        </div>
+        <div class="nk-block-head nk-block-head-sm mt-4">
+            <div class="nk-block-between">
+                <div class="nk-block-head-content">
+                    <h3 class="nk-block-title page-title mb-0">
+                        {{ title }}
+                    </h3>
+                    <div class="nk-block-des text-soft">
+                        <p>
+                            You have total
+                            <span class="text-base">{{ guardCount }}</span>
+                            data.
+                        </p>
                     </div>
-                    <div class="nk-block-head-content">
-                        <div class="toggle-wrap nk-block-tools-toggle">
-                            <a
-                                href="#"
-                                class="btn btn-icon btn-trigger toggle-expand me-n1"
-                                data-target="pageMenu"
-                            >
-                                <em class="icon ni ni-more-v"></em>
-                            </a>
-                            <div
-                                class="toggle-expand-content"
-                                data-content="pageMenu"
-                            >
-                                <ul class="nk-block-tools g-3">
-                                    <li>
-                                        <div class="dropdown">
-                                            <ModalButton
-                                                :target="'#createModal'"
-                                                @click="
-                                                    openModal(
-                                                        '#createModal',
-                                                        false,
-                                                        route('guards.store'),
-                                                        undefined,
-                                                        'New Guard'
-                                                    )
-                                                "
-                                            />
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                </div>
+                <div class="nk-block-head-content">
+                    <div class="toggle-wrap nk-block-tools-toggle">
+                        <a
+                            href="#"
+                            class="btn btn-icon btn-trigger toggle-expand me-n1"
+                            data-target="pageMenu"
+                        >
+                            <em class="icon ni ni-more-v"></em>
+                        </a>
+                        <div
+                            class="toggle-expand-content"
+                            data-content="pageMenu"
+                        >
+                            <ul class="nk-block-tools g-3">
+                                <li>
+                                    <div class="dropdown">
+                                        <ModalButton
+                                            :target="'#createModal'"
+                                            @click="
+                                                openModal(
+                                                    '#createGuardModal',
+                                                    false,
+                                                    route('guards.store'),
+                                                    undefined,
+                                                    'New Guard'
+                                                )
+                                            "
+                                        />
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card card-bordered card-preview">
-                <div class="card-inner">
-                    <DataTable
-                        :options="DtOptions"
-                        :data="guards"
-                        :columns="columns"
-                        class="nowrap table datatable-wrap table-responsive"
-                    >
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Company</th>
-                                <th>Location</th>
-                                <th>Role</th>
-                                <th style="width: 15%">Status</th>
-                                <th
-                                    class="nk-tb-col nk-tb-col-tools text-end"
-                                    style="width: 10%"
-                                ></th>
-                            </tr>
-                        </thead>
-                        <template #column-6="{ rowData }">
-                            <div class="dropdown">
-                                <a
-                                    class="btn btn-icon text-sm"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                >
-                                    <em class="icon ni ni-more-v"></em>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <ul class="link-list-opt no-bdr">
-                                        <li
-                                            @click="
-                                                openModal(
-                                                    '#createModal',
-                                                    true,
-                                                    route(
-                                                        'guards.change_password',
-                                                        rowData.id
-                                                    ),
-                                                    rowData,
-                                                    'Change Password'
-                                                )
-                                            "
-                                            class="hover:text-blue-400"
-                                        >
-                                            <a href="#">
-                                                <em
-                                                    class="icon ni ni-unlock"
-                                                ></em>
-                                                <span>Change Password</span>
-                                            </a>
-                                        </li>
-                                        <li
-                                            @click="
-                                                openModal(
-                                                    '#statusModal',
-                                                    true,
-                                                    route(
-                                                        'guards.reset_session',
-                                                        rowData.id
-                                                    ),
-                                                    rowData,
-                                                    'Reset Device Login'
-                                                )
-                                            "
-                                        >
-                                            <a
-                                                class="hover:!text-red-400"
-                                                href="#"
-                                            >
-                                                <em
-                                                    class="icon ni ni-mobile"
-                                                ></em>
-                                                <span>Reset Device Login</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+        <div class="card card-bordered card-preview">
+            <div class="card-inner">
+                <DataTable
+                    :options="DtOptions"
+                    :data="guards"
+                    :columns="columns"
+                    class="nowrap table datatable-wrap table-responsive"
+                >
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th class="text-center">Role</th>
+                            <th style="width: 15%">Status</th>
+                            <th
+                                class="nk-tb-col nk-tb-col-tools text-end"
+                                style="width: 10%"
+                            ></th>
+                        </tr>
+                    </thead>
+                    <template #column-6="{ rowData }">
+                        <div class="dropdown">
+                            <a
+                                class="btn btn-icon text-sm"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                            >
+                                <em class="icon ni ni-more-v"></em>
+                            </a>
+                            <div class="dropdown-menu" role="menu">
+                                <ul class="link-list-opt no-bdr">
+                                    <li
+                                        @click="
+                                            openModal(
+                                                '#createGuardModal',
+                                                true,
+                                                route(
+                                                    'guards.change_password',
+                                                    rowData.id
+                                                ),
+                                                rowData,
+                                                'Change Password'
+                                            )
+                                        "
+                                        class="hover:text-blue-400"
+                                    >
+                                        <a href="#">
+                                            <em class="icon ni ni-unlock"></em>
+                                            <span>Change Password</span>
+                                        </a>
+                                    </li>
+                                    <li
+                                        @click="
+                                            openModal(
+                                                '#statusGuardModal',
+                                                true,
+                                                route(
+                                                    'guards.reset_session',
+                                                    rowData.id
+                                                ),
+                                                rowData,
+                                                'Reset Device Login'
+                                            )
+                                        "
+                                    >
+                                        <a class="hover:!text-red-400" href="#">
+                                            <em class="icon ni ni-mobile"></em>
+                                            <span>Reset Device Login</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                        </template>
-                    </DataTable>
-                </div>
+                        </div>
+                    </template>
+                </DataTable>
             </div>
         </div>
 
@@ -256,14 +257,14 @@ const openModal = (
             :roles="roles"
             :locations="locations"
             :companies="companies"
-            :modalId="'createModal'"
+            :modalId="'createGuardModal'"
             :modalData="modalData"
             :defaultValues="modalData.defaultValues"
         />
 
         <StatusModal
             :title="modalData.title"
-            :modalId="'statusModal'"
+            :modalId="'statusGuardModal'"
             :url="modalData.url"
             :defaultValues="modalData.defaultValues"
         />

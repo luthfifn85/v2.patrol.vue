@@ -15,8 +15,16 @@ import { Link } from "@inertiajs/vue3";
             </Link>
         </li>
         <li class="nk-menu-item">
-            <Link :href="route('report')" class="nk-menu-link">
+            <Link :href="route('reports.index')" class="nk-menu-link">
                 <span class="nk-menu-text">Report</span>
+            </Link>
+        </li>
+        <li
+            class="nk-menu-item"
+            :class="{ active: route().current('faqs.index') }"
+        >
+            <Link :href="route('faqs.index')" class="nk-menu-link">
+                <span class="nk-menu-text">FAQs</span>
             </Link>
         </li>
     </ul>
@@ -41,13 +49,32 @@ import { Link } from "@inertiajs/vue3";
 
         <li
             class="nk-menu-item"
-            :class="{ active: route().current('patrols.index') }"
+            :class="{
+                active:
+                    route().current('patrols.index') ||
+                    route().current('patrols.show'),
+            }"
         >
             <Link :href="route('patrols.index')" class="nk-menu-link">
                 <span class="nk-menu-icon"
                     ><em class="icon ni ni-shield-check"></em
                 ></span>
                 <span class="nk-menu-text">Patrol</span>
+            </Link>
+        </li>
+
+        <li
+            class="nk-menu-item"
+            :class="{
+                active:
+                    route().current('sos.index') || route().current('sos.show'),
+            }"
+        >
+            <Link :href="route('sos.index')" class="nk-menu-link">
+                <span class="nk-menu-icon"
+                    ><em class="icon ni ni-report"></em
+                ></span>
+                <span class="nk-menu-text">SOS / Incident</span>
             </Link>
         </li>
         <li class="nk-menu-heading">

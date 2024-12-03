@@ -90,6 +90,21 @@ const handleGenerateQR = () => {
         <div class="row mt-2">
             <div class="col-12">
                 <div class="mt-3 text-center">
+                    <div
+                        v-if="form.processing"
+                        class="absolute flex gap-x-3 justify-center w-[90%] h-[65%] items-center bg-white top-[15%]"
+                    >
+                        <div class="spinner-grow text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
                     <QrcodeSvg
                         :size="180"
                         class="mx-auto"

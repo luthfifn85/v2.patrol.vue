@@ -1,15 +1,20 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { reactive, ref } from "vue";
-import ModalButton from "@/Components/ModalButton.vue";
 import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-bs5";
 import InputModal from "./InputModal.vue";
 import StatusModal from "@/Pages/Checkpoint/StatusModal.vue";
 import QRCodeModal from "@/Pages/Checkpoint/QRCodeModal.vue";
-import DtOptions from "@/datatables-config";
+import createDtOptions from "@/datatables-config";
+import jszip from "jszip";
+import pdfmake from "pdfmake";
 
 DataTable.use(DataTablesCore);
+DataTablesCore.Buttons.jszip(jszip);
+DataTablesCore.Buttons.pdfMake(pdfmake);
+
+const DtOptions = createDtOptions();
 
 const props = defineProps({
     title: {
@@ -61,7 +66,7 @@ const columns = [
     },
     {
         data: null,
-        className: "align-content-center justify-items-start",
+        className: "align-content-center justify-items-start !z-[50]",
         defaultContent: "",
     },
 ];
@@ -94,153 +99,148 @@ const openModal = (
 
 <template>
     <AppLayout>
-        <div class="nk-content-wrap">
-            <div class="nk-block-head nk-block-head-sm">
-                <div class="nk-block-between">
-                    <div class="nk-block-head-content">
-                        <h3 class="nk-block-title page-title mb-0">
-                            {{ title }}
-                        </h3>
-                        <div class="nk-block-des text-soft">
-                            <p>
-                                You have total
-                                <span class="text-base">{{
-                                    checkpointCount
-                                }}</span>
-                                data.
-                            </p>
-                        </div>
+        <div class="nk-block-head nk-block-head-sm mt-4">
+            <div class="nk-block-between">
+                <div class="nk-block-head-content">
+                    <h3 class="nk-block-title page-title mb-0">
+                        {{ title }}
+                    </h3>
+                    <div class="nk-block-des text-soft">
+                        <p>
+                            You have total
+                            <span class="text-base">{{ checkpointCount }}</span>
+                            data.
+                        </p>
                     </div>
-                    <div class="nk-block-head-content">
-                        <div class="toggle-wrap nk-block-tools-toggle">
-                            <a
-                                href="#"
-                                class="btn btn-icon btn-trigger toggle-expand me-n1"
-                                data-target="pageMenu"
-                            >
-                                <em class="icon ni ni-more-v"></em>
-                            </a>
-                            <div
-                                class="toggle-expand-content"
-                                data-content="pageMenu"
-                            >
-                                <ul class="nk-block-tools g-3">
-                                    <li>
-                                        <div class="dropdown">
-                                            <ModalButton
-                                                :target="'#createModal'"
-                                                @click="
-                                                    openModal(
-                                                        '#createModal',
-                                                        false,
-                                                        route(
-                                                            'checkpoints.store'
-                                                        ),
-                                                        undefined,
-                                                        'New Checkpoint'
-                                                    )
-                                                "
-                                            />
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                </div>
+                <div class="nk-block-head-content">
+                    <div class="toggle-wrap nk-block-tools-toggle">
+                        <a
+                            href="#"
+                            class="btn btn-icon btn-trigger toggle-expand me-n1"
+                            data-target="pageMenu"
+                        >
+                            <em class="icon ni ni-more-v"></em>
+                        </a>
+                        <div
+                            class="toggle-expand-content"
+                            data-content="pageMenu"
+                        >
+                            <ul class="nk-block-tools g-3">
+                                <li>
+                                    <div class="dropdown">
+                                        <button
+                                            data-bs-toggle="modal"
+                                            @click="
+                                                openModal(
+                                                    '#createCheckpointModal',
+                                                    true,
+                                                    route('locations.store'),
+                                                    undefined,
+                                                    'New Location'
+                                                )
+                                            "
+                                            class="toggle btn btn-icon btn-dark"
+                                        >
+                                            <em class="icon ni ni-plus"></em>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card card-bordered card-preview">
-                <div class="card-inner">
-                    <DataTable
-                        :options="DtOptions"
-                        :data="checkpoints"
-                        :columns="columns"
-                        class="nowrap table datatable-wrap table-responsive"
-                    >
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Company</th>
-                                <th style="width: 15%">Status</th>
-                                <th
-                                    class="nk-tb-col nk-tb-col-tools text-end"
-                                    style="width: 10%"
-                                ></th>
-                            </tr>
-                        </thead>
-                        <template #column-4="{ rowData }">
-                            <div class="dropdown">
-                                <a
-                                    class="btn btn-icon text-sm"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                >
-                                    <em class="icon ni ni-more-v"></em>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <ul class="link-list-opt no-bdr">
-                                        <li
-                                            @click="
-                                                openModal(
-                                                    '#qrCodeModal',
-                                                    true,
-                                                    route(
-                                                        'checkpoints.generate_qr_code',
-                                                        rowData.id
-                                                    ),
-                                                    rowData,
-                                                    'Generate QR Code'
-                                                )
-                                            "
-                                        >
-                                            <a href="#">
-                                                <em class="icon ni ni-qr"></em>
-                                                <span>View QR Code</span>
-                                            </a>
-                                        </li>
-                                        <li
-                                            @click="
-                                                openModal(
-                                                    '#statusModal',
-                                                    true,
-                                                    route(
-                                                        'checkpoints.update',
-                                                        rowData.id
-                                                    ),
-                                                    rowData,
-                                                    'Change Photo Mode'
-                                                )
-                                            "
-                                        >
-                                            <a href="#">
-                                                <em
-                                                    class="icon ni ni-camera"
-                                                ></em>
-                                                <span>Change Mode</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+        <div class="card card-bordered card-preview">
+            <div class="card-inner">
+                <DataTable
+                    :options="DtOptions"
+                    :data="checkpoints"
+                    :columns="columns"
+                    class="nowrap table datatable-wrap table-responsive"
+                >
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Company</th>
+                            <th style="width: 15%">Status</th>
+                            <th
+                                class="nk-tb-col nk-tb-col-tools text-end"
+                                style="width: 10%"
+                            ></th>
+                        </tr>
+                    </thead>
+                    <template #column-4="{ rowData }">
+                        <div class="dropdown">
+                            <a
+                                class="btn btn-icon text-sm"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                            >
+                                <em class="icon ni ni-more-v"></em>
+                            </a>
+                            <div class="dropdown-menu">
+                                <ul class="link-list-opt no-bdr">
+                                    <li
+                                        @click="
+                                            openModal(
+                                                '#qrCodeModal',
+                                                true,
+                                                route(
+                                                    'checkpoints.generate_qr_code',
+                                                    rowData.id
+                                                ),
+                                                rowData,
+                                                'Generate QR Code'
+                                            )
+                                        "
+                                    >
+                                        <a href="#">
+                                            <em class="icon ni ni-qr"></em>
+                                            <span>View QR Code</span>
+                                        </a>
+                                    </li>
+                                    <li
+                                        @click="
+                                            openModal(
+                                                '#statusCheckpointModal',
+                                                true,
+                                                route(
+                                                    'checkpoints.update',
+                                                    rowData.id
+                                                ),
+                                                rowData,
+                                                'Change Photo Mode'
+                                            )
+                                        "
+                                    >
+                                        <a href="#">
+                                            <em class="icon ni ni-camera"></em>
+                                            <span>Change Mode</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                        </template>
-                    </DataTable>
-                </div>
+                        </div>
+                    </template>
+                </DataTable>
             </div>
         </div>
 
         <InputModal
             :companies="companies"
             :locations="locations"
-            :modalId="'createModal'"
+            :modalId="'createCheckpointModal'"
             :modalData="modalData"
         />
 
         <StatusModal
             :title="modalData.title"
             :url="modalData.url"
-            :modalId="'statusModal'"
+            :modalId="'statusCheckpointModal'"
             :defaultValues="modalData.defaultValues"
         />
 

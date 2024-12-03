@@ -97,13 +97,14 @@ const submitForm = () => {
             <div class="row g-3">
                 <div class="col-12">
                     <div class="form-group mt-3">
-                        <label class="form-label" for="company_id"
+                        <label class="form-label" for="companyId"
                             >Company<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
                             <select
                                 @change="handleCompanyChange"
                                 v-model="form.company_id"
+                                id="companyId"
                                 class="form-select"
                                 required
                             >
@@ -124,12 +125,13 @@ const submitForm = () => {
 
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="location_id"
+                        <label class="form-label" for="locationId"
                             >Location<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
                             <select
                                 v-model="form.patrol_location_id"
+                                id="locationId"
                                 class="form-select"
                                 required
                                 :disabled="!form.company_id"
@@ -151,15 +153,15 @@ const submitForm = () => {
 
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="name"
+                        <label class="form-label" for="checkpointName"
                             >Name<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
                             <input
                                 type="text"
                                 class="form-control"
-                                v-bind="form"
                                 v-model="form.name"
+                                id="checkpointName"
                                 name="name"
                                 placeholder="Enter checkpoint name"
                                 :maxlength="255"

@@ -81,7 +81,8 @@ onMounted(() => {
 });
 
 const handleSubmit = () => {
-    const method = props.isEdit ? "put" : "post";
+    // const method = props.isEdit ? "put" : "post";
+    const method = "post";
     form[method](props.url, {
         onSuccess: () => {
             form.reset();
@@ -104,11 +105,12 @@ const handleSubmit = () => {
             <div class="row g-3">
                 <div class="col-12">
                     <div class="form-group" :class="isEdit ? 'mt-3' : ''">
-                        <label class="form-label" for="company_id"
+                        <label class="form-label" for="companyId"
                             >Company<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
                             <select
+                                id="companyId"
                                 v-model="form.company_id"
                                 class="form-select"
                                 :disabled="!props.isEdit"
@@ -131,7 +133,7 @@ const handleSubmit = () => {
 
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="name"
+                        <label class="form-label" for="LocationName"
                             >Name<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
@@ -139,6 +141,7 @@ const handleSubmit = () => {
                                 type="text"
                                 class="form-control"
                                 name="name"
+                                id="LocationName"
                                 v-model="form.name"
                                 placeholder="Enter location name"
                                 :maxlength="255"
@@ -152,7 +155,7 @@ const handleSubmit = () => {
 
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="address"
+                        <label class="form-label" for="locationAddress"
                             >Address<code class="ms-1">*</code></label
                         >
                         <div class="form-control-wrap">
@@ -160,6 +163,7 @@ const handleSubmit = () => {
                                 type="text"
                                 class="form-control"
                                 name="address"
+                                id="locationAddress"
                                 placeholder="Enter address"
                                 rows="2"
                                 :maxlength="255"
@@ -187,6 +191,7 @@ const handleSubmit = () => {
                                 class="form-control"
                                 autocomplete="off"
                                 name="phone"
+                                id="phone"
                                 placeholder="08123456789"
                                 @input="sanitizeInput"
                                 :readonly="!props.isEdit"

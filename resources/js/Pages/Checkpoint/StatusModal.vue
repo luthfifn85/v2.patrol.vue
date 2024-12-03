@@ -78,13 +78,13 @@ const submitForm = () => {
             <div class="row mt-2">
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="form-label" for="model"
+                        <label class="form-label" for="mode"
                             >Photo Mode<code class="ms-1">*</code></label
                         >
                         <select
                             class="form-select"
-                            name="model"
-                            v-bind="form"
+                            name="mode"
+                            id="mode"
                             v-model="form.mode"
                         >
                             <option value="1" :selected="form.mode == 1">

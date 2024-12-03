@@ -1,7 +1,8 @@
 <script setup>
 import LoginLayout from "@/Layouts/LoginLayout.vue";
 import InputError from "@/Components/InputError.vue";
-import { useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
+import moment from "moment";
 
 defineProps({
     status: {
@@ -18,9 +19,16 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
+const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission
     form.post(route("login"), {
-        onFinish: () => form.reset("password"),
+        onSuccess: () => {
+            form.reset("password");
+        },
+        onError: (errors) => {
+            form.reset("password");
+            console.log("Errors:", errors); // For debugging
+        },
     });
 };
 </script>
@@ -28,44 +36,42 @@ const submit = () => {
 <template>
     <LoginLayout>
         <div class="nk-content">
-            <div class="nk-split nk-split-page nk-split-md">
-                <div
-                    class="nk-split-content nk-block-area nk-block-area-column nk-auth-container bg-white"
-                >
-                    <div class="nk-block nk-block-middle nk-auth-body">
-                        <div class="brand-logo pb-5">
-                            <a href="#" class="logo-link">
-                                <img
-                                    class="logo-light logo-img logo-img-lg"
-                                    src="images/logo.png"
-                                    srcset="images/logo2x.png 2x"
-                                    alt="logo"
-                                />
-                                <img
-                                    class="logo-dark logo-img logo-img-lg"
-                                    src="images/logo-dark.png"
-                                    srcset="images/logo-dark2x.png 2x"
-                                    alt="logo-dark"
-                                />
-                            </a>
-                        </div>
+            <div class="nk-block nk-block-middle nk-auth-body wide-xs">
+                <div class="brand-logo pb-5 text-center">
+                    <a href="#" class="logo-link">
+                        <img
+                            class="logo-light logo-img logo-img-lg"
+                            src="/images/logo-dar.png"
+                            alt="logo"
+                        />
+                        <img
+                            class="logo-dark logo-img logo-img-lg"
+                            src="/images/logo-dar.png"
+                            alt="logo-dark"
+                        />
+                    </a>
+                    <br />
+                    <p>Mobile Apps by PT. Absolute Services</p>
+                </div>
+                <div class="card card-bordered">
+                    <div class="card-inner card-inner-lg">
                         <div class="nk-block-head">
                             <div class="nk-block-head-content">
-                                <h5 class="nk-block-title">Login</h5>
+                                <h4 class="nk-block-title">Welcome</h4>
                                 <div class="nk-block-des">
                                     <p>
-                                        Access {{ appName }} panel using your
-                                        Account
+                                        Access {{ appName }}
+                                        admin panel using your account.
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        <form @submit.prevent="submit">
+                        <form method="POST" @submit.prevent="handleSubmit">
                             <div class="form-group">
                                 <div class="form-label-group">
-                                    <label class="form-label" for="email"
-                                        >Email</label
-                                    >
+                                    <label class="form-label" for="default-01">
+                                        Email
+                                    </label>
                                 </div>
                                 <div class="form-control-wrap">
                                     <input
@@ -118,41 +124,52 @@ const submit = () => {
                             </div>
                             <div class="form-group">
                                 <button
-                                    class="btn btn-lg btn-primary btn-block"
+                                    class="btn btn-lg btn-dark btn-block"
                                     :disabled="form.processing"
                                 >
                                     {{
-                                        form.processing
-                                            ? "Loading..."
-                                            : "Login"
+                                        form.processing ? "Loading..." : "Login"
                                     }}
                                 </button>
                             </div>
                         </form>
                     </div>
-                    <div class="nk-block nk-auth-footer">
-                        <div class="nk-block-between">
-                            <ul class="nav nav-sm">
+                </div>
+            </div>
+            <div
+                class="nk-footer nk-auth-footer-full max-w-full !py-6"
+                style="border-top: 1px solid #e0e0e0"
+            >
+                <div class="container wide-lg">
+                    <div class="row g-3">
+                        <div class="col-lg-6 order-lg-last">
+                            <ul
+                                class="nav nav-sm justify-content-center justify-content-lg-end"
+                            >
                                 <li class="nav-item">
-                                    <a
-                                        class="link link-primary fw-normal py-2 px-3"
-                                        href="#"
-                                        >Terms & Policy</a
+                                    <Link
+                                        class="link link-secondary fw-normal py-2 px-3"
+                                        :href="route('terms_policy')"
                                     >
+                                        Terms &amp; Policy
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
-                        <div class="mt-3">
-                            <p>
-                                &copy; 2024 {{ appName }}. All Rights Reserved.
-                            </p>
+                        <div class="col-lg-6">
+                            <div
+                                class="nk-block-content text-center text-lg-left"
+                            >
+                                <p class="text-soft">
+                                    &copy; 2021 - {{ moment().format("YYYY") }}
+                                    {{ appName }}. All Rights Reserved.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div
-                    class="nk-split-content nk-split-stretch bg-abstract"
-                ></div>
             </div>
         </div>
+        <div class="nk-split-content nk-split-stretch bg-abstract"></div>
     </LoginLayout>
 </template>
