@@ -17,6 +17,11 @@ class PatrolLocation extends Model
         'is_active'
     ];
 
+    public function patrolTransactions()
+    {
+        return $this->hasMany(Patrol::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

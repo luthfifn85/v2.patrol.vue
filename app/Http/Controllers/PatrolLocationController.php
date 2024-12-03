@@ -27,14 +27,14 @@ class PatrolLocationController extends Controller
                 ->get();
 
             $companies = Company::where('is_active', 1)
-            ->get();
+                ->get();
 
             return Inertia::render('Location/Index', [
                 'title' => 'Locations',
                 'locations' => $locations->toArray(),
                 'companies' => $companies,
                 'locationCount' => $locations->count(),
-        ]);
+            ]);
         } catch (Throwable $th) {
             Log::error($th);
             return back()->with('error', 'Something went wrong');
@@ -81,32 +81,40 @@ class PatrolLocationController extends Controller
         }
     }
 
-    public function update(Request $request, PatrolLocation $get)
+    public function update(Request $request, PatrolLocation $locationBind)
     {
-        DB::beginTransaction();
-
-        try
-        {
-            $request->validate([
-                'address' => ['required'],
-                'phone' => ['required']
+        try {
+            $validated = $request->validate([
+                'company_id' => ['nullable', 'exists:companies,id,is_active,1'],
+                'name' => ['nullable', 'max:255', Rule::unique('patrol_locations', 'name')->ignore($locationBind->id)],
+                'address' => ['nullable', 'max:255'],
+                'phone' => ['nullable', 'digits_between:10,13', Rule::unique('patrol_locations', 'phone')->ignore($locationBind->id), 'regex:/^[1-9][0-9]*$/'],
+                'status' => ['nullable', 'in:0,1'],
+            ], [
+                'company_id.exists' => 'The selected company is invalid',
+                'name.max' => 'The name may not be greater than 255 characters',
+                'name.unique' => 'The name has already been taken',
+                'address.max' => 'The address may not be greater than 255 characters',
+                'phone.digits_between' => 'The phone must be between 10 and 13 digits',
+                'phone.unique' => 'The phone has already been taken',
+                'phone.regex' => 'The phone is invalid',
             ]);
 
-            $get->update([
-                'address' => $request->address,
-                'phone' => $request->phone,
+            $locationBind->update([
+                ...$validated,
+                'is_active' => $validated['status'] ?? $locationBind->is_active,
             ]);
 
-            DB::commit();
-
-            return back()->with('success', 'Location updated');
-        }
-
-        catch (Throwable $e)
-        {
-            DB::rollBack();
-
-            throw $e;
+            return redirect()->back()->with('success', [
+                'message' => "Location successfully updated",
+                'id' => uniqid()
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th);
+            return redirect()->back()->with('error', [
+                'message' => 'Something went wrong',
+                'id' => uniqid()
+            ]);
         }
     }
 }
