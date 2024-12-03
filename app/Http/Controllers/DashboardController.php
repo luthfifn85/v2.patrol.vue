@@ -2,51 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Sos;
 use Inertia\Inertia;
 use App\Models\Patrol;
-use App\Models\Company;
-use App\Models\PatrolUser;
-use App\Models\PatrolLocation;
-use App\Models\PatrolCheckpoint;
-use Illuminate\Support\Facades\Auth;
+use App\Models\PatrolMedia;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $role = User::with('role:id,name')
-            ->where('id', Auth::id())
+        $patrolCurrentYearCount = Patrol::whereYear('created_at', now()->format('Y'))
+            ->count();
+
+        $latestPatrol = Patrol::with('company:id,name', 'patrolLocation:id,name', 'patrolCheckpoint:id,name', 'patrolEvent:id,name', 'patrolUser:id,name', 'mediaItems:id,filename,patrol_id')
+            ->withCount('comments')
+            ->latest()
             ->first();
 
-        $companyCount = Company::where('is_active', 1)->count();
+        $checkpointCount = Patrol::whereYear('created_at', now()->format('Y'))
+            ->distinct('patrol_checkpoint_id')
+            ->count('patrol_checkpoint_id');
 
-        $locationCount = PatrolLocation::where('is_active', 1)->count();
+        $monthlyCount = Patrol::select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+            ->whereYear('created_at', now()->format('Y'))
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->pluck('count', 'month');
 
-        $checkpointCount = PatrolCheckpoint::where('is_active', 1)->count();
+        $incidentCount = Sos::whereYear('created_at', now()->format('Y'))
+            ->count();
 
-        $userMobileCount = PatrolUser::where('is_active', 1)->count();
-
-        $userWebCount = User::where('is_active', 1)->count();
-
-        $patrolTransactionCount = Patrol::count();
-
-        $latestLocations = PatrolLocation::where('is_active', 1)
-            ->with('company:id,name')
-            ->latest('created_at')
-            ->limit(10)
-            ->get();
+        // Initialize an array with all months (1-12) to ensure each month has a value
+        $monthlyData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthlyData[$i] = $monthlyCount->get($i, 0); // Get count for the month, default to 0 if not found
+        }
+        // dd($monthlyData);
 
         return Inertia::render('Dashboard/Index', [
             'title' => "Dashboard",
-            'companyCount' => $companyCount,
-            'locationCount' => $locationCount,
+            'patrolCurrentYearCount' => $patrolCurrentYearCount,
+            'latestPatrol' => $latestPatrol,
             'checkpointCount' => $checkpointCount,
-            'userMobileCount' => $userMobileCount,
-            'userWebCount' => $userWebCount,
-            'patrolTransactionCount' => $patrolTransactionCount,
-            'latestLocations' => $latestLocations->toArray(),
-            'role' => $role
+            'monthlyData' => $monthlyData,
+            'incidentCount' => $incidentCount,
         ]);
     }
 }
