@@ -72,10 +72,11 @@ Route::middleware('auth')->group(function () {
 
     // company
     Route::controller(CompanyController::class)->group(function () {
-        Route::prefix('company')->group(function () {
-            Route::name('company')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/store', 'store')->name('.store');
+        Route::prefix('companies')->group(function () {
+            Route::name('companies.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::put('/{companyBind}', 'update')->name('update');
             });
         });
     });
