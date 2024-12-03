@@ -40,11 +40,11 @@ Route::middleware('auth')->group(function () {
 
     // user profile
     Route::controller(ProfileController::class)->group(function () {
-        Route::prefix('profile')->group(function () {
-            Route::name('profile')->group(function () {
-                Route::get('/', 'index');
-                Route::post('/update', 'update')->name('.update');
-                Route::post('/password', 'password')->name('.password');
+        Route::prefix('profiles')->group(function () {
+            Route::name('profiles.')->group(function () {
+                Route::get('/', 'edit')->name('edit');
+                Route::put('/update', 'update')->name('update');
+                Route::put('/password', 'password')->name('password');
             });
         });
     });
