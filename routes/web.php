@@ -58,6 +58,17 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    // sos
+    Route::controller(SosController::class)->group(function () {
+        Route::prefix('sos')->group(function () {
+            Route::name('sos.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{sosBind}', 'show')->name('show');
+            });
+        });
+    });
+
+
     // company
     Route::controller(CompanyController::class)->group(function () {
         Route::prefix('company')->group(function () {
