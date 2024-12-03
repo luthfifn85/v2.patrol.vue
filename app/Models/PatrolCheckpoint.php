@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PatrolCheckpoint extends Model
 {
@@ -21,6 +21,11 @@ class PatrolCheckpoint extends Model
         'radius',
         'is_active'
     ];
+
+    public function patrolTransactions()
+    {
+        return $this->hasMany(Patrol::class);
+    }
 
     public function company()
     {

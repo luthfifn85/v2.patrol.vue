@@ -46,7 +46,7 @@ class Patrol extends Model
         return $this->belongsTo(PatrolUser::class);
     }
 
-    public function comment()
+    public function comments()
     {
         return $this->hasMany(PatrolComment::class, 'patrol_id');
     }

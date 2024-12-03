@@ -57,7 +57,7 @@ class PatrolUserController extends Controller
                 'mobile_no' => ['required', 'numeric', 'digits_between:10,13', 'unique:patrol_users,mobile_no'],
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'unique:patrol_users,email', 'email', 'max:255', 'string'],
-                    'password' => ['required', 'min:8']
+                'password' => ['required', 'min:8']
             ], [
                 'company_id.required' => 'The company field is required',
                 'company_id.exists' => 'The selected company is invalid',
@@ -79,7 +79,7 @@ class PatrolUserController extends Controller
                 'email.string' => 'The email must be a string',
                 'password.required' => 'The password field is required',
                 'password.min' => 'The password must be at least 8 characters'
-                ]);
+            ]);
 
             PatrolUser::create([
                 ...$validated,
@@ -104,8 +104,7 @@ class PatrolUserController extends Controller
     {
         DB::beginTransaction();
 
-        try
-        {
+        try {
             $request->validate([
                 'mobile_no' => ['required', 'numeric', 'digits_between:10,13']
             ]);
@@ -117,10 +116,7 @@ class PatrolUserController extends Controller
             DB::commit();
 
             return back()->with('success', 'Checkpoint updated');
-        }
-
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             throw $e;
