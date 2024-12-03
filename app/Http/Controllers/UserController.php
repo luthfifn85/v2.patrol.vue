@@ -63,8 +63,7 @@ class UserController extends Controller
     {
         DB::beginTransaction();
 
-        try
-        {
+        try {
             $request->validate([
                 'name' => ['required']
             ]);
@@ -76,10 +75,7 @@ class UserController extends Controller
             DB::commit();
 
             return back()->with('success', 'Name updated');
-        }
-
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             DB::rollBack();
 
             throw $e;

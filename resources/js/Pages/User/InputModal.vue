@@ -28,10 +28,10 @@ const props = defineProps({
 });
 
 const form = useForm({
-    name: props.modalData.defaultValues.name ,
-    email: props.modalData.defaultValues.email ,
-    role_id: props.modalData.defaultValues.role_id ,
-    password: props.modalData.defaultValues.password ,
+    name: props.modalData.defaultValues.name,
+    email: props.modalData.defaultValues.email,
+    role_id: props.modalData.defaultValues.role_id,
+    password: props.modalData.defaultValues.password,
 });
 
 const showPassword = ref(false);
@@ -112,6 +112,7 @@ const submitForm = () => {
                                     class="form-control"
                                     v-model="form.name"
                                     name="name"
+                                    id="name"
                                     placeholder="Enter user's name"
                                     :maxlength="255"
                                     :minlength="3"
@@ -124,14 +125,16 @@ const submitForm = () => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="email"
-                                >Email<code class="ms-1">*</code></label
-                            >
+                            <label class="form-label" for="email">
+                                Email
+                                <code class="ms-1">*</code>
+                            </label>
                             <div class="form-control-wrap">
                                 <input
                                     type="email"
                                     class="form-control"
                                     v-model="form.email"
+                                    id="email"
                                     name="email"
                                     placeholder="your-email@mail"
                                     :maxlength="255"
@@ -145,12 +148,13 @@ const submitForm = () => {
 
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="role_id"
+                            <label class="form-label" for="roleId"
                                 >Role<code class="ms-1">*</code></label
                             >
                             <div class="form-control-wrap">
                                 <select
                                     name="role_id"
+                                    id="roleId"
                                     v-model="form.role_id"
                                     class="form-select"
                                     required
@@ -201,6 +205,7 @@ const submitForm = () => {
                                 class="form-control"
                                 v-model="form.password"
                                 :minlength="8"
+                                id="password"
                                 name="password"
                                 placeholder="********"
                                 autocomplete="off"
