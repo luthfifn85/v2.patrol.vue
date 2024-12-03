@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SosController;
 use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\UserController;
@@ -156,9 +157,11 @@ Route::middleware('auth')->group(function () {
 
     // Report
     Route::controller(ReportController::class)->group(function () {
-        Route::prefix('report')->group(function () {
-            Route::name('report')->group(function () {
-                Route::get('/', 'index');
+        Route::prefix('reports')->group(function () {
+            Route::name('reports.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/history', 'history')->name('history');
+                Route::get('/incident', 'incident')->name('incident');
             });
         });
     });
