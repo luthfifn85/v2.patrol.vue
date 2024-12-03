@@ -6,3 +6,18 @@
  * Version	 :	1.0.0
  * Updated	 :	07.23.2020
 **/
+
+a:visited {
+    color: #6e82a5;
+    text-decoration: none;
+}
+
+a:link {
+    color: #6e82a5;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #c61f25 !important;
+    text-decoration: none;
+}
