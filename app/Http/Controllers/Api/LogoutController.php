@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Throwable;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends Controller
 {

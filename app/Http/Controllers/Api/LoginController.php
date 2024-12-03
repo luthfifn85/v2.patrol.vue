@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Throwable;
 use App\Models\PatrolUser;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Throwable;
 
 class LoginController extends Controller
 {
@@ -41,12 +41,15 @@ class LoginController extends Controller
                         ],
                         'data' => [
                             'id' => $user->id,
-                            'role' => $user->patrolRole->name,
+                            'role_id' => $user->patrol_role_id,
+                            'company_id' => $user->company_id,
+                            'location_id' => $user->patrol_location_id ?? null,
                             'name' => $user->name,
-                            'email' => $user->email,
-                            'mobile_no' => $user->mobile_no ?? null,
                             'company' => $user->company->name,
-                            'location' => $user->patrolLocation->name ?? 'All'
+                            'role' => $user->patrolRole->name,
+                            'location' => $user->patrolLocation->name ?? 'All',
+                            'email' => $user->email,
+                            'mobile_no' => $user->mobile_no ?? null
                         ]
                     ], 200);
                 }
