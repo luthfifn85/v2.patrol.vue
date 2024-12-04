@@ -131,9 +131,7 @@ const props = defineProps({
                                         :href="route('logout')"
                                         method="post"
                                     >
-                                        <em
-                                            class="icon ni ni-signout"
-                                        ></em>
+                                        <em class="icon ni ni-signout"></em>
                                         <span> Logout </span>
                                     </Link>
                                 </li>

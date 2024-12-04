@@ -25,7 +25,6 @@ watch(
 
 const showSideNav = ref(false);
 const handleSideNav = () => {
-    // console.log("clicked");
     showSideNav.value = !showSideNav.value;
 };
 </script>
@@ -69,7 +68,7 @@ div.datatable-wrap > div > div.dt-scroll-head > div > table {
     border-top: none;
 }
 
-div.datatable-wrap.mb-1 > div > div.dt-scroll-head table thead  tr th {
+div.datatable-wrap.mb-1 > div > div.dt-scroll-head table thead tr th {
     border-bottom: none !important;
 }
 

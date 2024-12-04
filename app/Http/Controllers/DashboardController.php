@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Sos;
 use Inertia\Inertia;
 use App\Models\Patrol;
-use App\Models\PatrolMedia;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -37,7 +36,6 @@ class DashboardController extends Controller
         for ($i = 1; $i <= 12; $i++) {
             $monthlyData[$i] = $monthlyCount->get($i, 0); // Get count for the month, default to 0 if not found
         }
-        // dd($monthlyData);
 
         return Inertia::render('Dashboard/Index', [
             'title' => "Dashboard",
