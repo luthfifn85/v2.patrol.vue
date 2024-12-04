@@ -235,7 +235,7 @@ const modules = [EffectFade, Navigation, Pagination, Autoplay];
                                 disableOnInteraction: false,
                             }"
                             :modules="modules"
-                            class="mySwiper max-w-full"
+                            class="mySwiper max-w-full h-full"
                             :style="{
                                 '--swiper-pagination-color': '#c61f25',
                                 '--swiper-navigation-color': '#fff',
@@ -244,9 +244,11 @@ const modules = [EffectFade, Navigation, Pagination, Autoplay];
                             <SwiperSlide
                                 v-for="media in latestPatrol.media_items"
                                 :key="media.id"
+                                class="h-full"
                             >
                                 <img
                                     :src="`http://v2.patrol.vue-images.test/patrol/${media.filename}`"
+                                    class="h-full object-cover"
                                     width="100%"
                                 />
                             </SwiperSlide>
