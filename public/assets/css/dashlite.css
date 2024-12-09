@@ -15527,9 +15527,11 @@ a:hover .btn-trigger:before {
   border-color: #dbdfea;
 }
 .btn-dim.btn-outline-light:not(:disabled):not(.disabled):hover, .dt-buttons .btn-dim.btn-secondary:not(:disabled):not(.disabled):hover {
-  color: #fff;
-  background-color: #526484;
-  border-color: #526484;
+  color: #fff !important;
+  background-color: #c61f25;
+  border-color: #c61f25;
+  /* background-color: #526484;
+  border-color: #526484; */
 }
 
 .btn-white.btn-outline-light:not(.btn-dim):not(:disabled):not(.disabled):hover, .dt-buttons .btn-secondary:not(.btn-dim):not(:disabled):not(.disabled):hover, .btn-trans.btn-outline-light:not(.btn-dim):not(:disabled):not(.disabled):hover {

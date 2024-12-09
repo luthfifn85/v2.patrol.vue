@@ -376,7 +376,7 @@ const modules = [EffectFade, Navigation, Pagination, Autoplay];
                                     <div class="dropdown">
                                         <a
                                             href="#"
-                                            class="btn btn-dark text-white d-none d-sm-inline-flex"
+                                            class="btn btn-dark text-white d-none d-sm-inline-flex hover:!text-white"
                                             ><em
                                                 class="icon ni ni-calendar"
                                             ></em
